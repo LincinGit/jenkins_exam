@@ -1,12 +1,13 @@
 pipeline {
 environment { // Declaration of environment variables
 DOCKER_ID = "lincin65" // replace this with your docker-id
-DOCKER_IMAGE = "datascientestapi"
+DOCKER_IMAGE_CAST = "cast-service"
+DOCKER_IMAGE_MOVIE = "movie-cast"
 DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
 }
 agent any // Jenkins will be able to select all available agents
 stages {
-  stage(' Docker Build'){ // docker build image stage
+  stage(' Docker Build Cast-Service'){ // docker build image stage
     steps {
       script {
       sh '''
@@ -14,8 +15,32 @@ stages {
         ls -la
         find . -name Dockerfile
         docker rm -f jenkins
-        docker build -t $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG .
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG app/cast-service
       sleep 6
+      '''
+      }
+    }
+  }
+  stage(' Docker Build Movie-Service'){ // docker build image stage
+    steps {
+      script {
+      sh '''
+        pwd
+        ls -la
+        find . -name Dockerfile
+        docker rm -f jenkins
+        docker build -t $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG  app/movie-service
+      sleep 6
+      '''
+      }
+    }
+  }  
+  stage('Docker run'){ // run container from our builded image
+    steps {
+      script {
+      sh '''
+      docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
+      sleep 10
       '''
       }
     }
@@ -24,12 +49,12 @@ stages {
     steps {
       script {
       sh '''
-      docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+      docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
       sleep 10
       '''
       }
     }
-  }
+  }  
   stage('Test Acceptance'){ // we launch the curl command to validate that the container responds to the request
     steps {
       script {
@@ -48,7 +73,15 @@ stages {
       script {
         sh '''
         docker login -u $DOCKER_ID -p $DOCKER_PASS
-        docker push $DOCKER_ID/$DOCKER_IMAGE:$DOCKER_TAG
+        docker push $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
+        '''
+      }
+    }
+    steps {
+      script {
+        sh '''
+        docker login -u $DOCKER_ID -p $DOCKER_PASS
+        docker push $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
         '''
       }
     }

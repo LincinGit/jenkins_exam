@@ -1,0 +1,10 @@
+dependencies:
+
+- name: movie
+  repository: file://../movie
+
+- name: cast
+  repository: file://../cast
+
+- name: nginx
+  repository: file://../nginx

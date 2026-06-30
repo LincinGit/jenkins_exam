@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cast-db
+spec:
+  serviceName: cast-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cast-db
+  template:
+    metadata:
+      labels:
+        app: cast-db
+    spec:
+      containers:
+      - name: postgres
+        image: {{ .Values.postgresMovie.image }}
+        env:
+        - name: POSTGRES_DB
+          value: {{ .Values.postgresMovie.database }}
+        - name: POSTGRES_USER
+          value: {{ .Values.postgresMovie.username }}
+        - name: POSTGRES_PASSWORD
+          value: {{ .Values.postgresMovie.password }}
+        ports:
+        - containerPort: 5432
