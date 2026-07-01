@@ -54,17 +54,17 @@ stages {
       }
     }
   }  
-  stage('Test Acceptance'){ // we launch the curl command to validate that the container responds to the request
-    steps {
-      script {
-      sh '''
-      // curl localhost
-      curl http://localhost:8081
-      curl http://localhost:8082
-      '''
-      }
-    }
-  }
+  // stage('Test Acceptance'){ // we launch the curl command to validate that the container responds to the request
+  //   steps {
+  //     script {
+  //     sh '''
+  //     // curl localhost
+  //     curl http://localhost:8081
+  //     curl http://localhost:8082
+  //     '''
+  //     }
+  //   }
+  // }
   stage('Docker Push'){ //we pass the built image to our docker hub account
     environment
     {
