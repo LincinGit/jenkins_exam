@@ -5,13 +5,6 @@ DOCKER_IMAGE_CAST = "cast-service"
 DOCKER_IMAGE_MOVIE = "movie-cast"
 DOCKER_TAG = "v.${BUILD_ID}.0" // we will tag our images with the current build in order to increment the value by 1 with each new build
 
-// environment {
-//     REGISTRY      = "registry.example.com"
-//     IMAGE_TAG     = "${BUILD_NUMBER}"
-//     HELM_RELEASE  = "movie-app"
-//     NAMESPACE     = "production"
-// }
-
 }
 agent any // Jenkins will be able to select all available agents
 stages {
@@ -172,61 +165,6 @@ stages {
   //     // helm upgrade --install app fastapi --values=values.yml --namespace dev
   //     helm upgrade --install app jenkins_exam_app --values=values.yml --namespace dev
   //     '''
-  //     }
-  //   }
-
-                // sh """
-                // helm upgrade --install ${HELM_RELEASE} ./helm \
-                //   --namespace ${NAMESPACE} \
-                //   --create-namespace \
-                //   --set movie.image.repository=${REGISTRY}/movie-service \
-                //   --set movie.image.tag=${IMAGE_TAG} \
-                //   --set cast.image.repository=${REGISTRY}/cast-service \
-                //   --set cast.image.tag=${IMAGE_TAG}
-                // """
-
-//  }
-  // stage('Deploiement en staging'){
-  //   environment {
-  //   KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
-  //   }
-  //   steps {
-  //     script {
-  //     sh '''
-  //     rm -Rf .kube
-  //     mkdir .kube
-  //     ls
-  //     cat $KUBECONFIG > .kube/config
-  //     cp fastapi/values.yaml values.yml
-  //     cat values.yml
-  //     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-  //     helm upgrade --install app fastapi --values=values.yml --namespace staging
-  //     '''
-  //     }
-  //   }
-  // }
-  // stage('Deploiement en prod'){
-  //   environment {
-  //     KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
-  //     }
-  //     steps {
-  //       // Create an Approval Button with a timeout of 15minutes.
-  //       // this require a manuel validation in order to deploy on production environment
-  //       timeout(time: 15, unit: "MINUTES") {
-  //         input message: 'Do you want to deploy in production ?', ok: 'Yes'
-  //       }
-  //       script {
-  //         sh '''
-  //         rm -Rf .kube
-  //         mkdir .kube
-  //         ls
-  //         cat $KUBECONFIG > .kube/config
-  //         cp fastapi/values.yaml values.yml
-  //         cat values.yml
-  //         sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-  //         helm upgrade --install app fastapi --values=values.yml --namespace prod
-  //         '''
-  //       }
   //     }
   //   }
   }
