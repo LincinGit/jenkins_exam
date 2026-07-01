@@ -90,7 +90,9 @@ stages {
       }
       steps {
           sh '''
-          mkdir -p .kube
+          rm -Rf .kube
+          mkdir .kube
+          ls
           cp $KUBECONFIG .kube/config
           helm dependency update charts/umbrella
           helm upgrade --install jenkins-exam-app charts/umbrella \
