@@ -94,7 +94,7 @@ stages {
       }
     }
   }
-  stage('Deploy to Dev') {
+  stage('Deploy to dev') {
       environment {
           KUBECONFIG = credentials('config')
       }
@@ -113,7 +113,48 @@ stages {
           '''
       }
   }
-
+  stage('Deploy to staging') {
+      environment {
+          KUBECONFIG = credentials('config')
+      }
+      steps {
+          sh '''
+          mkdir -p .kube
+          cp $KUBECONFIG .kube/config
+          helm dependency update charts/umbrella
+          helm upgrade --install jenkins_exam_app charts/umbrella \
+              --namespace staging \
+              --create-namespace \
+              --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
+              --set cast.image.tag=${DOCKER_TAG}
+              --set movie.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_MOVIE} \
+              --set movie.image.tag=${DOCKER_TAG}             
+          '''
+      }
+  }
+  stage('Deploy to prod') {
+      environment {
+          KUBECONFIG = credentials('config')
+      }
+      steps {
+        timeout(time: 15, unit: "MINUTES") {
+          input message: 'Do you want to deploy in production ?', ok: 'Yes'
+        }
+        script {
+          sh '''
+          mkdir -p .kube
+          cp $KUBECONFIG .kube/config
+          helm dependency update charts/umbrella
+          helm upgrade --install jenkins_exam_app charts/umbrella \
+              --namespace prod \
+              --create-namespace \
+              --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
+              --set cast.image.tag=${DOCKER_TAG}
+              --set movie.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_MOVIE} \
+              --set movie.image.tag=${DOCKER_TAG}             
+          '''
+      }
+  }  
   // stage('Deploiement en dev'){
   //   environment {
   //   KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
@@ -145,48 +186,48 @@ stages {
                 // """
 
 //  }
-  stage('Deploiement en staging'){
-    environment {
-    KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
-    }
-    steps {
-      script {
-      sh '''
-      rm -Rf .kube
-      mkdir .kube
-      ls
-      cat $KUBECONFIG > .kube/config
-      cp fastapi/values.yaml values.yml
-      cat values.yml
-      sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-      helm upgrade --install app fastapi --values=values.yml --namespace staging
-      '''
-      }
-    }
-  }
-  stage('Deploiement en prod'){
-    environment {
-      KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
-      }
-      steps {
-        // Create an Approval Button with a timeout of 15minutes.
-        // this require a manuel validation in order to deploy on production environment
-        timeout(time: 15, unit: "MINUTES") {
-          input message: 'Do you want to deploy in production ?', ok: 'Yes'
-        }
-        script {
-          sh '''
-          rm -Rf .kube
-          mkdir .kube
-          ls
-          cat $KUBECONFIG > .kube/config
-          cp fastapi/values.yaml values.yml
-          cat values.yml
-          sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
-          helm upgrade --install app fastapi --values=values.yml --namespace prod
-          '''
-        }
-      }
-    }
+  // stage('Deploiement en staging'){
+  //   environment {
+  //   KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+  //   }
+  //   steps {
+  //     script {
+  //     sh '''
+  //     rm -Rf .kube
+  //     mkdir .kube
+  //     ls
+  //     cat $KUBECONFIG > .kube/config
+  //     cp fastapi/values.yaml values.yml
+  //     cat values.yml
+  //     sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+  //     helm upgrade --install app fastapi --values=values.yml --namespace staging
+  //     '''
+  //     }
+  //   }
+  // }
+  // stage('Deploiement en prod'){
+  //   environment {
+  //     KUBECONFIG = credentials("config") // we retrieve  kubeconfig from secret file called config saved on jenkins
+  //     }
+  //     steps {
+  //       // Create an Approval Button with a timeout of 15minutes.
+  //       // this require a manuel validation in order to deploy on production environment
+  //       timeout(time: 15, unit: "MINUTES") {
+  //         input message: 'Do you want to deploy in production ?', ok: 'Yes'
+  //       }
+  //       script {
+  //         sh '''
+  //         rm -Rf .kube
+  //         mkdir .kube
+  //         ls
+  //         cat $KUBECONFIG > .kube/config
+  //         cp fastapi/values.yaml values.yml
+  //         cat values.yml
+  //         sed -i "s+tag.*+tag: ${DOCKER_TAG}+g" values.yml
+  //         helm upgrade --install app fastapi --values=values.yml --namespace prod
+  //         '''
+  //       }
+  //     }
+  //   }
   }
 }
