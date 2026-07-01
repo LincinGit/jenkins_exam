@@ -93,7 +93,7 @@ stages {
           mkdir -p .kube
           cp $KUBECONFIG .kube/config
           helm dependency update charts/umbrella
-          helm upgrade --install jenkins_exam_app charts/umbrella \
+          helm upgrade --install jenkins-exam-app charts/umbrella \
               --namespace dev \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
@@ -112,7 +112,7 @@ stages {
           mkdir -p .kube
           cp $KUBECONFIG .kube/config
           helm dependency update charts/umbrella
-          helm upgrade --install jenkins_exam_app charts/umbrella \
+          helm upgrade --install jenkins-exam-app charts/umbrella \
               --namespace staging \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
@@ -135,7 +135,7 @@ stages {
           mkdir -p .kube
           cp $KUBECONFIG .kube/config
           helm dependency update charts/umbrella
-          helm upgrade --install jenkins_exam_app charts/umbrella \
+          helm upgrade --install jenkins-exam-app charts/umbrella \
               --namespace prod \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
