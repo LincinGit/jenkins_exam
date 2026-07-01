@@ -20,16 +20,11 @@ spec:
         - containerPort: 8000
         env:
         - name: DATABASE_URI
-          valueFrom:
-            secretKeyRef:
-              name: secrets
           value: postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev
-        - name: MOVIE_SERVICE_HOST_URL
-          value: http://movie-service:8000/api/v1/movie/
         # - name: DATABASE_URI
         #   valueFrom:
         #     secretKeyRef:
         #       name: secrets
-        #   value: postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev
-        # - name: MOVIE_SERVICE_HOST_URL
-        #   value: http://movie-service:8000/api/v1/movie/
+        #       key: DATABASE_URI
+        - name: MOVIE_SERVICE_HOST_URL
+          value: http://movie-service:8000/api/v1/movie/

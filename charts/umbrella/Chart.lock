@@ -1,0 +1,12 @@
+dependencies:
+- name: movie
+  repository: file://../movie
+  version: 0.1.0
+- name: cast
+  repository: file://../cast
+  version: 0.1.0
+- name: nginx
+  repository: file://../nginx
+  version: 0.1.0
+digest: sha256:d5a4ce5a9eaeb04256bcc993749bf3a95b7680a7bcff9257b472a8ab179793c8
+generated: "2026-07-01T16:38:30.787233342Z"
