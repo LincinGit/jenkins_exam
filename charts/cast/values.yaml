@@ -1,6 +1,37 @@
-replicaCount: 1
-image:
-  repository: lincin65/cast-service
-  # tag: "1.2.5"
-  tag: latest
-  pullPolicy: IfNotPresent
+cast:
+  replicaCount: 1
+
+  image:
+    repository: lincin65/cast-service
+    # tag: "1.2.5"
+    tag: latest
+    pullPolicy: IfNotPresent
+
+postgres:
+  replicaCount: 1
+
+  image:
+    repository: postgres
+    tag: "16"
+    # tag: latest
+    pullPolicy: IfNotPresent
+
+  postgres:
+    database: appdb
+    username: appuser
+    password: changeme
+
+  storage:
+    size: 10Gi
+    storageClass: standard
+
+  service:
+    port: 5432
+
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 1Gi  

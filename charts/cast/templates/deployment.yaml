@@ -3,22 +3,43 @@ kind: Deployment
 metadata:
   name: cast-service
 spec:
-  replicas: 1
+  replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: movie-service
+      app: cast-service
   template:
     metadata:
       labels:
-        app: movie-service
+        app: cast-service
     spec:
       containers:
-      - name: movie-service
-        image: "{{ .Values.movie.image.repository }}:{{ .Values.movie.image.tag }}"
+      - name: cast-service
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8000
         env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: cast_db_username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: secrets
+              key: cast_db_username
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              name: configmap
+              key: cast_db                            
         - name: DATABASE_URI
-          value: postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev
+          value: postgresql://POSTGRES_USER:POSTGRES_PASSWORD@POSTGRES_DB/cast_db_dev
         - name: CAST_SERVICE_HOST_URL
           value: http://cast-service:8000/api/v1/casts/
+        # env:
+        # - name: DATABASE_URI
+        #   value: postgresql://cast_db_username:cast_db_password@cast-db/cast_db_dev
+        # - name: CAST_SERVICE_HOST_URL
+        #   value: http://cast-service:8000/api/v1/casts/          

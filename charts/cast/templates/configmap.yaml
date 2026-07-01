@@ -3,4 +3,5 @@ kind: ConfigMap
 metadata:
   name: cast-config
 data:
-  # property-like keys; each key maps to a simple value
+  DATABASE_URI: postgresql://cast_db_username:cast_db_password@cast-db/cast_db_dev
+  CAST_SERVICE_HOST_URL: http://cast-service:8000/api/v1/casts/
