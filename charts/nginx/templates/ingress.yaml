@@ -4,7 +4,7 @@ metadata:
   name: movie-ingress
 spec:
   rules:
-  - host: movie.example.com
+  - host: k3.aiko.abrdns.com
     http:
       paths:
       - path: /

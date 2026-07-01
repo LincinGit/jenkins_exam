@@ -14,11 +14,22 @@ spec:
     spec:
       containers:
       - name: movie-service
-        image: "{{ .Values.movie.image.repository }}:{{ .Values.movie.image.tag }}"
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: 8000
         env:
         - name: DATABASE_URI
+          valueFrom:
+            secretKeyRef:
+              name: secrets
           value: postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev
         - name: MOVIE_SERVICE_HOST_URL
           value: http://movie-service:8000/api/v1/movie/
+        # - name: DATABASE_URI
+        #   valueFrom:
+        #     secretKeyRef:
+        #       name: secrets
+        #   value: postgresql://movie_db_username:movie_db_password@movie-db/movie_db_dev
+        # - name: MOVIE_SERVICE_HOST_URL
+        #   value: http://movie-service:8000/api/v1/movie/

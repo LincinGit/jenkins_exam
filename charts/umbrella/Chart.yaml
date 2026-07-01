@@ -1,10 +1,15 @@
+
+apiVersion: v2
+name: umbrella
+version: 0.1.0
+
 dependencies:
-
 - name: movie
+  version: 0.1.0
   repository: file://../movie
-
 - name: cast
+  version: 0.1.0
   repository: file://../cast
-
 - name: nginx
+  version: 0.1.0
   repository: file://../nginx

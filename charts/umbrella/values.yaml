@@ -1,0 +1,15 @@
+cast:
+  replicaCount: 1
+  image:
+    repository: lincin65/cast-service
+    # tag: "1.2.5"
+    tag: latest
+    pullPolicy: IfNotPresent
+
+movie:
+  replicaCount: 1
+  image:
+    repository: lincin65/movie-cast
+    # tag: "1.2.5"
+    tag: latest
+    pullPolicy: IfNotPresent
