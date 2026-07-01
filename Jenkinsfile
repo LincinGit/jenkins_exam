@@ -12,10 +12,9 @@ stages {
     steps {
       script {
       sh '''
-        // pwd
-        // ls -la
-        // find . -name Dockerfile
-        // docker rm -f jenkins
+        pwd
+        ls -la
+        find . -name Dockerfile
         docker build -t $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG app/cast-service
       sleep 6
       '''
@@ -26,10 +25,9 @@ stages {
     steps {
       script {
       sh '''
-        // pwd
-        // ls -la
-        // find . -name Dockerfile
-        // docker rm -f jenkins
+        pwd
+        ls -la
+        find . -name Dockerfile
         docker build -t $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG  app/movie-service
       sleep 6
       '''
