@@ -46,7 +46,7 @@ stages {
       }
     }
   }
-  stage('Docker run Cast Container'){ // run container from our builded image
+  stage('Docker run Movie Container'){ // run container from our builded image
     steps {
       script {
       sh '''
