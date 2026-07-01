@@ -38,6 +38,8 @@ stages {
     steps {
       script {
       sh '''
+      docker stop cast-service || true
+      docker rm -f cast-service || true
       docker run -d -p 80:80 --name cast-service $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
       sleep 10
       '''
@@ -48,6 +50,8 @@ stages {
     steps {
       script {
       sh '''
+      docker stop movie-service || true
+      docker rm -f movie-service || true
       docker run -d -p 80:80 --name movie-service $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
       sleep 10
       '''
