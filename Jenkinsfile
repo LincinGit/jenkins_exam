@@ -12,10 +12,10 @@ stages {
     steps {
       script {
       sh '''
-        pwd
-        ls -la
-        find . -name Dockerfile
-        docker rm -f jenkins
+        // pwd
+        // ls -la
+        // find . -name Dockerfile
+        // docker rm -f jenkins
         docker build -t $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG app/cast-service
       sleep 6
       '''
@@ -26,31 +26,31 @@ stages {
     steps {
       script {
       sh '''
-        pwd
-        ls -la
-        find . -name Dockerfile
-        docker rm -f jenkins
+        // pwd
+        // ls -la
+        // find . -name Dockerfile
+        // docker rm -f jenkins
         docker build -t $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG  app/movie-service
       sleep 6
       '''
       }
     }
   }  
-  stage('Docker run'){ // run container from our builded image
+  stage('Docker run Cast Container'){ // run container from our builded image
     steps {
       script {
       sh '''
-      docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
+      docker run -d -p 80:80 --name cast-service $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
       sleep 10
       '''
       }
     }
   }
-  stage('Docker run'){ // run container from our builded image
+  stage('Docker run Cast Container'){ // run container from our builded image
     steps {
       script {
       sh '''
-      docker run -d -p 80:80 --name jenkins $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
+      docker run -d -p 80:80 --name movie-service $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
       sleep 10
       '''
       }
@@ -60,7 +60,9 @@ stages {
     steps {
       script {
       sh '''
-      curl localhost
+      // curl localhost
+      curl http://localhost:8081
+      curl http://localhost:8082
       '''
       }
     }
@@ -73,19 +75,21 @@ stages {
     steps {
       script {
         sh '''
-        docker login -u $DOCKER_ID -p $DOCKER_PASS
+        // docker login -u $DOCKER_ID -p $DOCKER_PASS
+        echo "$DOCKER_PASS" | docker login -u "$DOCKER_ID" --password-stdin
         docker push $DOCKER_ID/$DOCKER_IMAGE_CAST:$DOCKER_TAG
-        '''
-      }
-    }
-    steps {
-      script {
-        sh '''
-        docker login -u $DOCKER_ID -p $DOCKER_PASS
         docker push $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
         '''
       }
     }
+    // steps {
+    //   script {
+    //     sh '''
+    //     docker login -u $DOCKER_ID -p $DOCKER_PASS
+    //     docker push $DOCKER_ID/$DOCKER_IMAGE_MOVIE:$DOCKER_TAG
+    //     '''
+    //   }
+    // }
   }
   stage('Deploy to dev') {
       environment {
@@ -100,7 +104,7 @@ stages {
               --namespace dev \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
-              --set cast.image.tag=${DOCKER_TAG}
+              --set cast.image.tag=${DOCKER_TAG} \
               --set movie.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_MOVIE} \
               --set movie.image.tag=${DOCKER_TAG}             
           '''
@@ -119,7 +123,7 @@ stages {
               --namespace staging \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
-              --set cast.image.tag=${DOCKER_TAG}
+              --set cast.image.tag=${DOCKER_TAG} \
               --set movie.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_MOVIE} \
               --set movie.image.tag=${DOCKER_TAG}             
           '''
@@ -142,7 +146,7 @@ stages {
               --namespace prod \
               --create-namespace \
               --set cast.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_CAST} \
-              --set cast.image.tag=${DOCKER_TAG}
+              --set cast.image.tag=${DOCKER_TAG} \
               --set movie.image.repository=${DOCKER_ID}/${DOCKER_IMAGE_MOVIE} \
               --set movie.image.tag=${DOCKER_TAG}             
           '''
@@ -151,4 +155,3 @@ stages {
   }
   }
 }
-
